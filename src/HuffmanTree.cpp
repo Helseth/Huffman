@@ -20,9 +20,9 @@ HuffmanNode* HuffmanTree::buildSubtree(){
 	HuffmanNode *subTree;
 	HuffmanNode *smallest = this->subTrees->at(0);
 	HuffmanNode *secondSmall = NULL;
-	HuffmanNode *curr;
-	int loc1, loc2 = 0;
-	for (int i = 0; i < this->subTrees->size(); i++){
+	int loc1 = 0;
+	int loc2 = 0;
+	for (unsigned int i = 0; i < this->subTrees->size(); i++){
 		if(this->subTrees->at(i)->getFreq() <= smallest->getFreq()){
 			secondSmall = smallest;
 			smallest = this->subTrees->at(i);
@@ -45,7 +45,9 @@ HuffmanNode* HuffmanTree::buildSubtree(){
 
 void HuffmanTree::buildBitmap(std::string bitString, HuffmanNode *node){
 	if(node->isLeaf()){
-		this->bitmap->insert(node->getKey(), bitString); //Only leaf nodes should be 'words' and be added to the bit map
+		std::pair<std::string, std::string> temp;
+		temp = make_pair(node->getKey(), bitString);  //Only leaf nodes should be 'words' and be added to the bit map
+		this->bitmap->emplace(temp);
 		return;
 	}
 
