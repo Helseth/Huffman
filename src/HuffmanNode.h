@@ -1,19 +1,22 @@
 #ifndef HUFFMAN_NODE
 #define HUFFMAN_NODE
 
+#include <string>
+using namespace std;
+
 class HuffmanNode{
 
 public:
 
-	HuffmanNode(char *key);
-	HuffmanNode(char *key, int freq);
+	HuffmanNode(string key);
+	HuffmanNode(string key, int freq);
 
 	HuffmanNode* getLeft();
 	HuffmanNode* getRight();
 	void setLeft(HuffmanNode *left);
 	void setRight(HuffmanNode *right);
-	char* getKey();
-	void setKey(char *key);
+	string getKey();
+	void setKey(string key);
 	int  getFreq();
 	void setFreq(int freq);
 	bool isLeaf();
@@ -22,7 +25,7 @@ private:
 
 	HuffmanNode *left;
 	HuffmanNode *right;
-	char *key;
+	string key;
 	int freq;
 };
 
