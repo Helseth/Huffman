@@ -1,20 +1,14 @@
 #include "HuffmanNode.h"
 #include <string>
 
-using namespace std;
-
-#ifndef NULL
-#define NULL 0
-#endif
-
-HuffmanNode::HuffmanNode(string key){
+HuffmanNode::HuffmanNode(std::string key){
 	this->key = key;
 	this->freq = 0;
 	this->left = NULL;
 	this->right = NULL;
 }
 
-HuffmanNode::HuffmanNode(string key, int freq){
+HuffmanNode::HuffmanNode(std::string key, int freq){
 	this->key = key;
 	this->freq = freq;
 	this->left = NULL;
@@ -29,7 +23,7 @@ HuffmanNode* HuffmanNode::getRight(){
 	return this->right;
 }
 
-string HuffmanNode::getKey(){
+std::string HuffmanNode::getKey(){
 	return this->key;
 }
 
@@ -45,7 +39,7 @@ void HuffmanNode::setRight(HuffmanNode *right){
 	this->right = right;
 }
 
-void HuffmanNode::setKey(string key){
+void HuffmanNode::setKey(std::string key){
 	this->key = key;
 }
 

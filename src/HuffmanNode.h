@@ -3,6 +3,10 @@
 
 #include <string>
 
+#ifndef NULL
+#define NULL 0
+#endif
+
 class HuffmanNode{
 
 public:
