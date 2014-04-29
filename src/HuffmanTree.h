@@ -15,12 +15,13 @@ public:
 	std::vector<HuffmanNode*> *subTrees; //List of all sub trees, yes a single node is a subtree
 
 	HuffmanTree();
+	void buildWords(std::string input);
 	void initSubTrees(); //Build all of our nodes from "words" mapping
 	void buildBitmap(std::string bitString, HuffmanNode *node);
 	HuffmanNode* buildSubtree(); //return a sub tree built from smallest 2 nodes in subTrees vector, return is pointer to subtree
 
 private:
-
+	unsigned int split(const std::string &txt, std::vector<std::string> &strs, char ch);
 };
 
 #endif

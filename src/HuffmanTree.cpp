@@ -72,3 +72,42 @@ void HuffmanTree::initSubTrees(){
 		this->subTrees->insert(this->subTrees->end(), newNode);
 	}
 }
+
+void HuffmanTree::buildWords(std::string input){
+	std::vector<std::string> tempVec;
+	std::map<std::string, int>::iterator iter;
+	split(input, tempVec, ' ');
+	for(unsigned int i = 0; i < tempVec.size(); i++){
+		iter = this->words->find(tempVec.at(i));
+		if(iter != this->words->end())
+			iter->second++;
+		else{
+			std::pair<std::string, int> temp;
+			temp = make_pair(tempVec.at(i), 0);
+			this->words->emplace(temp);
+		}	
+	}
+}
+
+/* This function was grabbed from http://stackoverflow.com/questions/5888022/split-string-by-single-spaces
+// Was going to use Boost library "boost\algorithm\string\split.hpp"
+*/
+unsigned int HuffmanTree::split(const std::string &txt, std::vector<std::string> &strs, char ch)
+{
+    unsigned int pos = txt.find( ch );
+    unsigned int initialPos = 0;
+    strs.clear();
+
+    // Decompose statement
+    while( pos != std::string::npos ) {
+        strs.push_back( txt.substr( initialPos, pos - initialPos + 1 ) );
+        initialPos = pos + 1;
+
+        pos = txt.find( ch, initialPos );
+    }
+
+    // Add the last one
+    strs.push_back( txt.substr( initialPos, std::min( pos, txt.size() ) - initialPos + 1 ) );
+
+    return strs.size();
+}
