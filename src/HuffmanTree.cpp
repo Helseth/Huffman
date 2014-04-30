@@ -56,7 +56,7 @@ void HuffmanTree::buildBitmap(std::string bitString, HuffmanNode *node){
 		temp = make_pair(node->getKey(), bitString);  //Only leaf nodes should be 'words' and be added to the bit map
 		this->bitmap->emplace(temp);
 		this->compression += node->getFreq() * bitString.length();
-		std::cout << node->getKey() << "\t\t" << bitString << std::endl;
+		//std::cout << node->getKey() << "\t\t" << bitString << std::endl; //This prints out the key/bitstring pair
 		return;
 	}
 
@@ -101,13 +101,15 @@ void HuffmanTree::buildWords(std::string input){
 double HuffmanTree::findCompression(std::string  input){
 	double compressionRatio;
 	compressionRatio = this->compression / (input.length() * 8);
-	std::cout << std::endl << this->compression << " bits";
-	std::cout << std::endl << "Compression Rate: " << compressionRatio << std::endl; 
+	std::cout << "Bitstring:" << std::endl;
+	std::cout << this->compression << " bits" << std::endl << std::endl;
+	std::cout << "Compression Rate: " << compressionRatio << std::endl; 
 	return compressionRatio;
 }
 
 /* This function was grabbed from http://stackoverflow.com/questions/5888022/split-string-by-single-spaces
 // Was going to use Boost library "boost\algorithm\string\split.hpp"
+// C++ does not have a similar function for strings like Java's string.split()
 */
 unsigned int HuffmanTree::split(const std::string &txt, std::vector<std::string> &strs, char ch)
 {
