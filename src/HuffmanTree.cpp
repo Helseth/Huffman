@@ -9,6 +9,10 @@
 
 #define LINE_LENGTH 72 //Used for nice word wrapping on output
 
+
+/* Old contructor used for testing
+// Do not use
+*/
 HuffmanTree::HuffmanTree(){
 	this->compression = 0.0;
 	this->root = NULL;
@@ -28,7 +32,7 @@ HuffmanTree::HuffmanTree(std::string input){
 
 	std::cout << "String:";
 	std::cout << std::endl << this->inString.length() * 8 << " bits" << std::endl << std::endl;
-	HuffmanTree::wrap(this->inString.c_str());
+	//HuffmanTree::wrap(this->inString.c_str());
 
 }
 
@@ -68,13 +72,13 @@ HuffmanNode* HuffmanTree::buildSubtree(){
 }
 
 void HuffmanTree::buildBitmap(){
-	std::cout.width(10);
-	std::cout << "key\t";
-	std::cout.width(10);
-	std::cout << "bitstring\n"; //Header for key/bitstring pairs
-	std::cout << "----------------------------------\n";
+	//std::cout.width(10);
+	//std::cout << "key\t ";
+	//std::cout.width(10);
+	//std::cout << " bitstring\n"; //Header for key/bitstring pairs
+	//std::cout << "----------------------------------\n";
 	HuffmanTree::buildBitmap("",this->root);
-	std::cout << std::endl;
+	//std::cout << std::endl;
 }
 
 void HuffmanTree::buildBitmap(std::string bitString, HuffmanNode *node){
@@ -84,10 +88,10 @@ void HuffmanTree::buildBitmap(std::string bitString, HuffmanNode *node){
 		this->bitmap->emplace(temp);
 		this->compression += node->getFreq() * bitString.length();
 
-		std::cout.width(10);
-		std::cout << node->getKey();
-		std::cout.width(10);
-		std::cout << bitString << std::endl; //This prints out the key/bitstring pair
+		//std::cout.width(10);
+		//std::cout << node->getKey();
+		//std::cout.width(10);
+		//std::cout << bitString << std::endl; //This prints out the key/bitstring pair
 
 		return;
 	}
@@ -129,6 +133,7 @@ void HuffmanTree::buildWords(){
 		}	
 	}
 }
+
 /* Old buildWords funcction used for testing
 // new one is self contained per HuffmanTree
 // object
@@ -153,8 +158,8 @@ double HuffmanTree::findCompression(std::string  input){
 	double compressionRatio;
 	compressionRatio = this->compression / (input.length() * 8);
 	std::cout << "Bitstring:" << std::endl;
-	std::cout << this->compression << " bits" << std::endl << std::endl;
-	std::cout << "Compression Rate: " << compressionRatio << std::endl; 
+	std::cout << static_cast<int>(this->compression) << " bits" << std::endl << std::endl;
+	std::cout << "Compression Rate: " << 1 - compressionRatio << std::endl; 
 	return compressionRatio;
 }
 
