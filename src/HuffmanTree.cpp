@@ -4,16 +4,33 @@
 #include <iostream>
 #include <iomanip>
 #include <fstream>
+#include <sstream>
 #include "HuffmanTree.h"
+
+#define LINE_LENGTH 72 //Used for nice word wrapping on output
 
 HuffmanTree::HuffmanTree(){
 	this->compression = 0.0;
 	this->root = NULL;
+	this->inString = "";
 	this->bitmap = new std::map<std::string, std::string>();
 	this->words = new std::map<std::string, int>();
 	this->subTrees = new std::vector<HuffmanNode*>();
 }
 
+HuffmanTree::HuffmanTree(std::string input){
+	this->compression = 0.0;
+	this->root = NULL;
+	this->inString = input;
+	this->bitmap = new std::map<std::string, std::string>();
+	this->words = new std::map<std::string, int>();
+	this->subTrees = new std::vector<HuffmanNode*>();
+
+	std::cout << "String:";
+	std::cout << std::endl << this->inString.length() * 8 << " bits" << std::endl << std::endl;
+	HuffmanTree::wrap(this->inString.c_str());
+
+}
 
 HuffmanNode* HuffmanTree::buildSubtree(){
 
@@ -26,7 +43,7 @@ HuffmanNode* HuffmanTree::buildSubtree(){
 		if(this->subTrees->size() == 1)
 			break;
 		smallest = this->subTrees->at(0);
-		HuffmanNode *secondSmall = this->subTrees->at(1);;//this->subTrees->at(1);
+		HuffmanNode *secondSmall = this->subTrees->at(1);
 
 		int loc1 = 0;
 		int loc2 = 0;
@@ -50,13 +67,28 @@ HuffmanNode* HuffmanTree::buildSubtree(){
 	return subTree;
 }
 
+void HuffmanTree::buildBitmap(){
+	std::cout.width(10);
+	std::cout << "key\t";
+	std::cout.width(10);
+	std::cout << "bitstring\n"; //Header for key/bitstring pairs
+	std::cout << "----------------------------------\n";
+	HuffmanTree::buildBitmap("",this->root);
+	std::cout << std::endl;
+}
+
 void HuffmanTree::buildBitmap(std::string bitString, HuffmanNode *node){
 	if(node->isLeaf()){
 		std::pair<std::string, std::string> temp;
 		temp = make_pair(node->getKey(), bitString);  //Only leaf nodes should be 'words' and be added to the bit map
 		this->bitmap->emplace(temp);
 		this->compression += node->getFreq() * bitString.length();
-		//std::cout << node->getKey() << "\t\t" << bitString << std::endl; //This prints out the key/bitstring pair
+
+		std::cout.width(10);
+		std::cout << node->getKey();
+		std::cout.width(10);
+		std::cout << bitString << std::endl; //This prints out the key/bitstring pair
+
 		return;
 	}
 
@@ -82,6 +114,25 @@ void HuffmanTree::initSubTrees(){
 	}
 }
 
+void HuffmanTree::buildWords(){
+	std::vector<std::string> tempVec;
+	std::map<std::string, int>::iterator iter;
+	split(this->inString, tempVec, ' ');
+	for(unsigned int i = 0; i < tempVec.size(); i++){
+		iter = this->words->find(tempVec.at(i));
+		if(iter != this->words->end())
+			iter->second++;
+		else{
+			std::pair<std::string, int> temp;
+			temp = make_pair(tempVec.at(i), 1);
+			this->words->emplace(temp);
+		}	
+	}
+}
+/* Old buildWords funcction used for testing
+// new one is self contained per HuffmanTree
+// object
+*/
 void HuffmanTree::buildWords(std::string input){
 	std::vector<std::string> tempVec;
 	std::map<std::string, int>::iterator iter;
@@ -129,4 +180,30 @@ unsigned int HuffmanTree::split(const std::string &txt, std::vector<std::string>
     strs.push_back( txt.substr( initialPos, std::min( pos, txt.size() ) - initialPos + 1 ) );
 
     return strs.size();
+}
+
+/* Word wrapping function used for cleaner output
+// Grabbed from http://rosettacode.org/wiki/Word_wrap#C.2B.2B
+*/
+std::string HuffmanTree::wrap(const char *text)
+{
+    std::istringstream words(text);
+    std::ostringstream wrapped;
+    std::string word;
+ 
+    if (words >> word) {
+        wrapped << word;
+        size_t space_left = LINE_LENGTH - word.length();
+        while (words >> word) {
+            if (space_left < word.length() + 1) {
+                wrapped << '\n' << word;
+                space_left = LINE_LENGTH - word.length();
+            } else {
+                wrapped << ' ' << word;
+                space_left -= word.length() + 1;
+            }
+        }
+    }
+	std::cout << wrapped.str() << std::endl << std::endl;
+    return wrapped.str();
 }
