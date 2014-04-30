@@ -1,7 +1,7 @@
 default: test
 
 test: Test.cpp
-	g++ -o Huffman *.cpp *.h -g
+	g++ -std=c++11 -o Huffman *.cpp *.h -g
 
 clean:
 	rm -f *.gch

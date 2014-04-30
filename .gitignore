@@ -19,6 +19,7 @@ local.properties
 .classpath
 .settings/
 .loadpath
+out.txt
 
 # External tool builders
 .externalToolBuilders/
