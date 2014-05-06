@@ -28,7 +28,6 @@ int main(int argc, char* argv[]){
 			if(strcmp(argv[4], "-s") == 0)
 				sing = true;
 		}
-		if(sing != true){
 			if(argc >= 4){
 				if(strcmp(argv[4], "-v") == 0)
 					verbose = true;
@@ -37,7 +36,6 @@ int main(int argc, char* argv[]){
 						verbose = true;
 				}
 			}
-		}
 	}
 
 	std::streambuf *cinbuf = std::cin.rdbuf();
@@ -58,7 +56,7 @@ int main(int argc, char* argv[]){
 		testFile.open(inFiles->at(i));
 		std::cin.rdbuf(testFile.rdbuf());
 		std::getline(testFile, testString);
-		inFiles->at(i).replace(0, inDir.length(), "");
+		inFiles->at(i).replace(0, inDir.length() + 1, "");
 		if(sing == false){
 			outFile.open("output/" + inFiles->at(i),std::ofstream::out);
 			std::cout.rdbuf(outFile.rdbuf());
