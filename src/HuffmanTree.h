@@ -6,10 +6,12 @@
 #include <map>
 #include "HuffmanNode.h"
 
+extern bool verboseG;
+
 class HuffmanTree{
 
 public:
-	bool verbose;
+	//bool verbose;
 	double compression;
 	std::string inString;
 	HuffmanNode *root;
@@ -18,7 +20,7 @@ public:
 	std::vector<HuffmanNode*> *subTrees; //List of all sub trees, yes a single node is a subtree
 
 	HuffmanTree();
-	HuffmanTree(std::string input, bool); //Use this contructor
+	HuffmanTree(std::string input); //Use this contructor
 	void buildWords();
 	void buildWords(std::string input); //Old used for testing, kept for test reasons
 	void initSubTrees(); //Build all of our nodes from "words" mapping

@@ -20,6 +20,8 @@ local.properties
 .settings/
 .loadpath
 out.txt
+input*/
+output*/
 
 # External tool builders
 .externalToolBuilders/

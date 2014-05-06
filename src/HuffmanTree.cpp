@@ -9,6 +9,8 @@
 
 #define LINE_LENGTH 72 //Used for nice word wrapping on output
 
+bool verboseG;
+
 
 /* Old contructor used for testing
 // Do not use
@@ -22,8 +24,7 @@ HuffmanTree::HuffmanTree(){
 	this->subTrees = new std::vector<HuffmanNode*>();
 }
 
-HuffmanTree::HuffmanTree(std::string input, bool verbose){
-	this->verbose = verbose;
+HuffmanTree::HuffmanTree(std::string input){
 	this->compression = 0.0;
 	this->root = NULL;
 	this->inString = input;
@@ -31,8 +32,10 @@ HuffmanTree::HuffmanTree(std::string input, bool verbose){
 	this->words = new std::map<std::string, int>();
 	this->subTrees = new std::vector<HuffmanNode*>();
 
-	//std::cout << "String:";
-	//std::cout << std::endl << this->inString.length() * 8 << " bits" << std::endl << std::endl;
+	if(verboseG){
+		std::cout << "String:";
+		std::cout << std::endl << this->inString.length() * 8 << " bits" << std::endl << std::endl;
+	}
 	//HuffmanTree::wrap(this->inString.c_str());
 	// Only Uncomment this if you want to see the whole input string, it will be word wrapped, semi-properly
 }
@@ -73,7 +76,7 @@ HuffmanNode* HuffmanTree::buildSubtree(){
 }
 
 void HuffmanTree::buildBitmap(){
-	if(this->verbose){
+	if(verboseG){
 		std::cout.width(10);
 		std::cout << "key\t ";
 		std::cout.width(10);
@@ -81,7 +84,7 @@ void HuffmanTree::buildBitmap(){
 		std::cout << "----------------------------------\n";
 	}
 	HuffmanTree::buildBitmap("",this->root);
-	if(this->verbose)
+	if(verboseG)
 		std::cout << std::endl;
 }
 
@@ -91,7 +94,7 @@ void HuffmanTree::buildBitmap(std::string bitString, HuffmanNode *node){
 		temp = make_pair(node->getKey(), bitString);  //Only leaf nodes should be 'words' and be added to the bit map
 		this->bitmap->emplace(temp);
 		this->compression += node->getFreq() * bitString.length();
-		if(this->verbose){
+		if(verboseG){
 			std::cout.width(10);
 			std::cout << node->getKey();
 			std::cout.width(10);
@@ -161,7 +164,7 @@ void HuffmanTree::buildWords(std::string input){
 double HuffmanTree::findCompression(std::string  input){
 	double compressionRatio;
 	compressionRatio = this->compression / (input.length() * 8);
-	if(this->verbose){
+	if(verboseG){
 		std::cout << "Bitstring:" << std::endl;
 		std::cout << static_cast<int>(this->compression) << " bits" << std::endl << std::endl;
 		std::cout << "Compression Rate: ";
