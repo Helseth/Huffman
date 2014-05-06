@@ -14,18 +14,44 @@ void listFiles(string, bool, vector<string>*);
 
 int main(int argc, char* argv[]){
 	string inDir;
+	bool title = false;
+	bool sing = false;
+	bool verbose = false;
 	vector<string> *inFiles = new vector<string>();
 	vector<HuffmanTree> *trees = new vector<HuffmanTree>();
 	if(argc > 1){
 		if(strcmp(argv[1], "-i") == 0)
 			inDir = argv[2];
+		if(strcmp(argv[3], "-t") == 0)
+			title = true;
+		if(argc > 4){
+			if(strcmp(argv[4], "-s") == 0)
+				sing = true;
+		}
+		if(sing != true){
+			if(argc >= 4){
+				if(strcmp(argv[4], "-v") == 0)
+					verbose = true;
+				if(argc > 5){
+					if(strcmp(argv[5], "-v") == 0)
+						verbose = true;
+				}
+			}
+		}
 	}
 
 	std::streambuf *cinbuf = std::cin.rdbuf();
 	std::streambuf *coutbuf = std::cout.rdbuf(); //save old buf
 	listFiles(inDir, false, inFiles);
 	std::ifstream testFile;
+	system("rmdir /s /q output");
 	system("mkdir output");
+	ofstream outFile;
+
+	if(sing == true){
+		outFile.open("output/compr.txt",std::ofstream::out);
+		std::cout.rdbuf(outFile.rdbuf());
+	}
 	for(int i = 0; i < inFiles->size(); i++){
 
 		std::string testString = "";
@@ -33,10 +59,11 @@ int main(int argc, char* argv[]){
 		std::cin.rdbuf(testFile.rdbuf());
 		std::getline(testFile, testString);
 		inFiles->at(i).replace(0, inDir.length(), "");
-		std::ofstream out("output/" + inFiles->at(i));
-		std::cout.rdbuf(out.rdbuf());
-
-		HuffmanTree *huffTree = new HuffmanTree(testString);
+		if(sing == false){
+			outFile.open("output/" + inFiles->at(i),std::ofstream::out);
+			std::cout.rdbuf(outFile.rdbuf());
+		}
+		HuffmanTree *huffTree = new HuffmanTree(testString, verbose);
 		huffTree->buildWords();
 		huffTree->initSubTrees();
 		huffTree->buildSubtree();
@@ -45,18 +72,21 @@ int main(int argc, char* argv[]){
 
 		testFile.close();
 		std::cin.rdbuf(cinbuf);   //reset to standard input again
-		std::cout.rdbuf(coutbuf); //reset to standard output again
-		
-	}	
+		if(sing == false){
+			outFile.close();
+			std::cout.rdbuf(coutbuf); //reset to standard output again
+		}
 
-	//std::cin.rdbuf(cinbuf);   //reset to standard input again
-	//std::cout.rdbuf(coutbuf); //reset to standard output again
+	}
+	if(sing == true){
+		outFile.close();
+		std::cout.rdbuf(coutbuf); //reset to standard output again
+	}
 
 	return 0;
 }
 
-bool isDir(string dir)
-{
+bool isDir(string dir){
     struct stat fileInfo;
     stat(dir.c_str(), &fileInfo);
     if (S_ISDIR(fileInfo.st_mode)) {
@@ -66,8 +96,7 @@ bool isDir(string dir)
     }
 }
 
-void listFiles(std::string baseDir, bool recursive, vector<string> *input)
-{
+void listFiles(std::string baseDir, bool recursive, vector<string> *input){
     DIR *dp;
     struct dirent *dirp;
     if ((dp = opendir(baseDir.c_str())) == NULL) {

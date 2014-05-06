@@ -22,7 +22,8 @@ HuffmanTree::HuffmanTree(){
 	this->subTrees = new std::vector<HuffmanNode*>();
 }
 
-HuffmanTree::HuffmanTree(std::string input){
+HuffmanTree::HuffmanTree(std::string input, bool verbose){
+	this->verbose = verbose;
 	this->compression = 0.0;
 	this->root = NULL;
 	this->inString = input;
@@ -30,10 +31,10 @@ HuffmanTree::HuffmanTree(std::string input){
 	this->words = new std::map<std::string, int>();
 	this->subTrees = new std::vector<HuffmanNode*>();
 
-	std::cout << "String:";
-	std::cout << std::endl << this->inString.length() * 8 << " bits" << std::endl << std::endl;
+	//std::cout << "String:";
+	//std::cout << std::endl << this->inString.length() * 8 << " bits" << std::endl << std::endl;
 	//HuffmanTree::wrap(this->inString.c_str());
-
+	// Only Uncomment this if you want to see the whole input string, it will be word wrapped, semi-properly
 }
 
 HuffmanNode* HuffmanTree::buildSubtree(){
@@ -41,8 +42,8 @@ HuffmanNode* HuffmanTree::buildSubtree(){
 	/* This function follows the convention that 2 trees are removed from the vector,
 	// then the tree built from them is placed back into the vector
 	*/
-	HuffmanNode *subTree;
-	HuffmanNode *smallest;
+	HuffmanNode *subTree = NULL;
+	HuffmanNode *smallest = NULL;
 	while(true){
 		if(this->subTrees->size() == 1)
 			break;
@@ -72,13 +73,16 @@ HuffmanNode* HuffmanTree::buildSubtree(){
 }
 
 void HuffmanTree::buildBitmap(){
-	//std::cout.width(10);
-	//std::cout << "key\t ";
-	//std::cout.width(10);
-	//std::cout << " bitstring\n"; //Header for key/bitstring pairs
-	//std::cout << "----------------------------------\n";
+	if(this->verbose){
+		std::cout.width(10);
+		std::cout << "key\t ";
+		std::cout.width(10);
+		std::cout << " bitstring\n"; //Header for key/bitstring pairs
+		std::cout << "----------------------------------\n";
+	}
 	HuffmanTree::buildBitmap("",this->root);
-	//std::cout << std::endl;
+	if(this->verbose)
+		std::cout << std::endl;
 }
 
 void HuffmanTree::buildBitmap(std::string bitString, HuffmanNode *node){
@@ -87,12 +91,12 @@ void HuffmanTree::buildBitmap(std::string bitString, HuffmanNode *node){
 		temp = make_pair(node->getKey(), bitString);  //Only leaf nodes should be 'words' and be added to the bit map
 		this->bitmap->emplace(temp);
 		this->compression += node->getFreq() * bitString.length();
-
-		//std::cout.width(10);
-		//std::cout << node->getKey();
-		//std::cout.width(10);
-		//std::cout << bitString << std::endl; //This prints out the key/bitstring pair
-
+		if(this->verbose){
+			std::cout.width(10);
+			std::cout << node->getKey();
+			std::cout.width(10);
+			std::cout << bitString << std::endl; //This prints out the key/bitstring pair
+		}
 		return;
 	}
 
@@ -157,9 +161,12 @@ void HuffmanTree::buildWords(std::string input){
 double HuffmanTree::findCompression(std::string  input){
 	double compressionRatio;
 	compressionRatio = this->compression / (input.length() * 8);
-	std::cout << "Bitstring:" << std::endl;
-	std::cout << static_cast<int>(this->compression) << " bits" << std::endl << std::endl;
-	std::cout << "Compression Rate: " << 1 - compressionRatio << std::endl; 
+	if(this->verbose){
+		std::cout << "Bitstring:" << std::endl;
+		std::cout << static_cast<int>(this->compression) << " bits" << std::endl << std::endl;
+		std::cout << "Compression Rate: ";
+	}
+	std::cout << compressionRatio << std::endl; 
 	return compressionRatio;
 }
 
