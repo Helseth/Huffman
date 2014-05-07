@@ -5,11 +5,13 @@
 #include <iomanip>
 #include <fstream>
 #include <sstream>
+#include <algorithm>
 #include "HuffmanTree.h"
 
 #define LINE_LENGTH 72 //Used for nice word wrapping on output
 
 bool verboseG;
+bool graphSet;
 
 
 /* Old contructor used for testing
@@ -145,32 +147,61 @@ void HuffmanTree::buildWords(){
 // new one is self contained per HuffmanTree
 // object
 */
-void HuffmanTree::buildWords(std::string input){
-	std::vector<std::string> tempVec;
+std::map<std::string, int>* HuffmanTree::buildWords(std::vector<std::string> tempVec){
+	std::map<std::string, int> *wordMap = new std::map<std::string, int>();
 	std::map<std::string, int>::iterator iter;
-	split(input, tempVec, ' ');
 	for(unsigned int i = 0; i < tempVec.size(); i++){
-		iter = this->words->find(tempVec.at(i));
-		if(iter != this->words->end())
+		iter = wordMap->find(tempVec.at(i));
+		if(iter != wordMap->end())
 			iter->second++;
 		else{
 			std::pair<std::string, int> temp;
 			temp = make_pair(tempVec.at(i), 1);
-			this->words->emplace(temp);
+			wordMap->emplace(temp);
 		}	
 	}
+	return wordMap;
 }
 
 double HuffmanTree::findCompression(std::string  input){
-	double compressionRatio;
-	compressionRatio = this->compression / (input.length() * 8);
-	if(verboseG){
-		std::cout << "Bitstring:" << std::endl;
-		std::cout << static_cast<int>(this->compression) << " bits" << std::endl << std::endl;
-		std::cout << "Compression Rate: ";
+	if(!graphSet){
+		double compressionRatio;
+		compressionRatio = this->compression / (input.length() * 8);
+		if(verboseG){
+			std::cout << "Bitstring:" << std::endl;
+			std::cout << static_cast<int>(this->compression) << " bits" << std::endl << std::endl;
+			std::cout << "Compression Rate: ";
+		}
+		std::cout << compressionRatio << std::endl; 
+		return compressionRatio;
 	}
-	std::cout << compressionRatio << std::endl; 
-	return compressionRatio;
+	else if(graphSet){
+		int bitSize = 0;
+		std::vector<std::string> tempVec;
+		split(input, tempVec, ' ');
+		std::map<std::string, int> *wordMap = HuffmanTree::buildWords(tempVec);
+		std::map<std::string, int>::iterator iter;
+		for(int i = 0; i < wordMap->size(); i++){
+			iter = wordMap->find(tempVec.at(i));
+			std::pair<std::string, int> temp;
+			if(iter != wordMap->end())
+				temp = make_pair(tempVec.at(i), iter->second);
+			
+			bitSize += HuffmanTree::traverse(temp);
+		}
+		return bitSize;
+	}
+	return 0.0; //Shouldn't be able to even get here, so compiler shut up
+}
+
+int HuffmanTree::traverse(std::pair<std::string, int> word){
+
+		std::map<std::string, std::string>::iterator iter;
+		for (iter = this->bitmap->begin(); iter != this->bitmap->end(); ++iter){
+			if(iter->first == word.first){
+				return iter->second.length() * word.second;
+			}
+		}
 }
 
 /* This function was grabbed from http://stackoverflow.com/questions/5888022/split-string-by-single-spaces
